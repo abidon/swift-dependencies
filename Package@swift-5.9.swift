@@ -1,6 +1,5 @@
 // swift-tools-version: 5.9
 
-import CompilerPluginSupport
 import PackageDescription
 
 let package = Package(
@@ -16,13 +15,8 @@ let package = Package(
       name: "Dependencies",
       targets: ["Dependencies"]
     ),
-    .library(
-      name: "DependenciesMacros",
-      targets: ["DependenciesMacros"]
-    ),
   ],
   dependencies: [
-    .package(url: "https://github.com/apple/swift-syntax", "509.0.0"..<"601.0.0"),
     .package(url: "https://github.com/google/swift-benchmark", from: "0.1.0"),
     .package(url: "https://github.com/pointfreeco/combine-schedulers", from: "1.0.0"),
     .package(url: "https://github.com/pointfreeco/swift-clocks", from: "1.0.0"),
@@ -49,21 +43,6 @@ let package = Package(
       name: "DependenciesTests",
       dependencies: [
         "Dependencies",
-        "DependenciesMacros",
-      ]
-    ),
-    .target(
-      name: "DependenciesMacros",
-      dependencies: [
-        "DependenciesMacrosPlugin",
-        .product(name: "XCTestDynamicOverlay", package: "xctest-dynamic-overlay"),
-      ]
-    ),
-    .macro(
-      name: "DependenciesMacrosPlugin",
-      dependencies: [
-        .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
-        .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
       ]
     ),
     .executableTarget(
@@ -84,22 +63,6 @@ let package = Package(
       targets: ["DependenciesTestObserver"]
     )
   )
-#endif
-
-#if !os(WASI)
-  package.dependencies.append(
-    .package(url: "https://github.com/pointfreeco/swift-macro-testing", from: "0.2.0")
-  )
-  package.targets.append(contentsOf: [
-    .testTarget(
-      name: "DependenciesMacrosPluginTests",
-      dependencies: [
-        "DependenciesMacros",
-        "DependenciesMacrosPlugin",
-        .product(name: "MacroTesting", package: "swift-macro-testing"),
-      ]
-    ),
-  ])
 #endif
 
 #if !os(Windows)
